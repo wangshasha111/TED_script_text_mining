@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><script>
+    (function() {
+    class RuffleMimeType {
+        constructor(a, b, c) {
+            this.type = a, this.description = b, this.suffixes = c
+        }
+    }
+    class RuffleMimeTypeArray {
+        constructor(a) {
+            this.__mimetypes = [], this.__named_mimetypes = {};
+            for (let b of a) this.install(b)
+        }
+        install(a) {
+            let b = this.__mimetypes.length;
+            this.__mimetypes.push(a), this.__named_mimetypes[a.type] = a, this[a.type] = a, this[b] = a
+        }
+        item(a) {
+            return this.__mimetypes[a]
+        }
+        namedItem(a) {
+            return this.__named_mimetypes[a]
+        }
+        get length() {
+            return this.__mimetypes.length
+        }
+    }
+    class RufflePlugin extends RuffleMimeTypeArray {
+        constructor(a, b, c, d) {
+            super(d), this.name = a, this.description = b, this.filename = c
+        }
+        install(a) {
+            a.enabledPlugin || (a.enabledPlugin = this), super.install(a)
+        }
+    }
+    class RufflePluginArray {
+        constructor(a) {
+            this.__plugins = [], this.__named_plugins = {};
+            for (let b of a) this.install(b)
+        }
+        install(a) {
+            let b = this.__plugins.length;
+            this.__plugins.push(a), this.__named_plugins[a.name] = a, this[a.name] = a, this[b] = a
+        }
+        item(a) {
+            return this.__plugins[a]
+        }
+        namedItem(a) {
+            return this.__named_plugins[a]
+        }
+        get length() {
+            return this.__plugins.length
+        }
+    }
+    const FLASH_PLUGIN = new RufflePlugin("Shockwave Flash", "Shockwave Flash 32.0 r0", "ruffle.js", [new RuffleMimeType("application/futuresplash", "Shockwave Flash", "spl"), new RuffleMimeType("application/x-shockwave-flash", "Shockwave Flash", "swf"), new RuffleMimeType("application/x-shockwave-flash2-preview", "Shockwave Flash", "swf"), new RuffleMimeType("application/vnd.adobe.flash-movie", "Shockwave Flash", "swf")]);
+
+    function install_plugin(a) {
+        navigator.plugins.install || Object.defineProperty(navigator, "plugins", {
+            value: new RufflePluginArray(navigator.plugins),
+            writable: !1
+        }), navigator.plugins.install(a), 0 < a.length && !navigator.mimeTypes.install && Object.defineProperty(navigator, "mimeTypes", {
+            value: new RuffleMimeTypeArray(navigator.mimeTypes),
+            writable: !1
+        });
+        for (var b = 0; b < a.length; b += 1) navigator.mimeTypes.install(a[b])
+    }
+    install_plugin(FLASH_PLUGIN);
+})();
+</script><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <meta name="generator" content="pandoc">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<h1 id="gender-an-r-package">Gender, an R package</h1>
+<p>Master branch: <a href="https://travis-ci.org/ropensci/gender"><img src="gender_files/gender.svg" alt="Build Status"></a> <a href="https://ci.appveyor.com/project/lmullen/gender/branch/master"><img src="gender_files/master.png" alt="Build status"></a></p>
+<p>Development branch: <a href="https://travis-ci.org/ropensci/gender"><img src="gender_files/gender_002.svg" alt="Build Status"></a> <a href="https://ci.appveyor.com/project/lmullen/gender/branch/develop"><img src="gender_files/develop.png" alt="Build status"></a></p>
+<p>Data sets, historical or otherwise, often contain a list of first 
+names but seldom identify those names by gender. Most techniques for 
+finding gender programmatically, such as the <a href="http://www.nltk.org/">Natural Language Toolkit</a>, rely on lists of male and female names. However, the gender<a href="#gender-vs-sex">*</a>
+ of names can vary over time. Any data set that covers the normal span 
+of a human life will require a historical method to find gender from 
+names.</p>
+<p>This package encodes gender based on names and dates of birth, using 
+either the Social Security Administration's data set of first names by 
+year since 1880 (based on an implementation by <a href="http://www.cameronblevins.org/">Cameron Blevins</a>) or the U.S. Census data from IPUMS for years before 1930 (contributed by <a href="http://benschmidt.org/">Ben Schmidt</a>).
+ By using these data sets instead of lists of male and female names, 
+this package is able to more accurately guess the gender of a name; 
+furthermore it is able to report the proportion of times that a name was
+ male or female for any given range of years.</p>
+<h2 id="installation">Installation</h2>
+<p>You can install the <a href="http://cran.r-project.org/web/packages/gender/index.html">CRAN version</a> of this package with <code>install.packages("gender")</code>. The first time you use the package you will be prompted to install the necessary data, which is in the <a href="http://github.com/lmullen/gender-data-pkg">genderdata package</a> hosted on GitHub.</p>
+<p>If you prefer, you can install both packages directly from GitHub. 
+First install devtools. Then run the following commands, which will 
+install the gender package and its accompanying data package.</p>
+<pre><code>devtools::install_github("ropensci/gender")
+devtools::install_github("lmullen/gender-data-pkg")</code></pre>
+<h2 id="using-the-package">Using the package</h2>
+<p>The simplest way to use this package is to pass a single name to the <code>gender()</code>
+ function. You can optionally specify a year or range of years to the 
+function. If you specify the years option, the function will calculate 
+the proportion of male and female uses of a name for that time period.</p>
+<pre><code>gender("madison")
+# $name
+# [1] "madison"
+#
+# $proportion_male
+# [1] 0.0162
+#
+# $proportion_female
+# [1] 0.9838
+#
+# $gender
+# [1] "female"
+#
+# $year_min
+# [1] 1932
+
+# $year_max
+# [1] 2012</code></pre>
+<p>Using the Social Security data, you can predict gender for years from
+ 1880 to 2012. Notice that in the 1950s Madison is a male name.</p>
+<pre><code>gender("madison", method = "ssa", years = c(1950, 1959))
+# $name
+# [1] "madison"
+# 
+# $proportion_male
+# [1] 1
+# 
+# $proportion_female
+# [1] 0
+# 
+# $gender
+# [1] "male"
+# 
+# $year_min
+# [1] 1950
+# 
+# $year_max
+# [1] 1959</code></pre>
+<p>Using the IPUMS U.S. Census data, you can predict gender from years from 1789 to 1930.</p>
+<pre><code>gender("madison", method = "ipums", years = 1820)
+# $name
+# [1] "madison"
+# 
+# $proportion_male
+# [1] 1
+# 
+# $proportion_female
+# [1] 0
+# 
+# $gender
+# [1] "male"
+# 
+# $year_min
+# [1] 1820
+# 
+# $year_max
+# [1] 1820</code></pre>
+<p>See the function documentation for more options: <code>?gender</code>. See the package vignette for suggestions on how to use the function with a data frame: <code>vignette(topic = "predicting-gender", package = "gender")</code></p>
+<h2 id="data">Data</h2>
+<p>The accompanying <a href="http://github.com/lmullen/gender-data-pkg">genderdata package</a> includes cleaned-up versions of several data sets. To see the available data sets run the following command:</p>
+<pre><code>library(genderdata)
+data(package = "genderdata")
+data(ssa_national)        # returns a data set with 1.6 million rows</code></pre>
+<p>The raw data sets used in this package are available here:</p>
+<ul>
+<li><a href="http://www.cs.cmu.edu/afs/cs/project/ai-repository/ai/areas/nlp/corpora/names/0.html">Mark Kantrowitz's name corpus</a></li>
+<li><a href="http://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-data-by-state-and-district-of-">Social Security Administration's baby names by year and state</a></li>
+<li><a href="http://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-level-data">Social Security Administration's baby names by year</a></li>
+<li><a href="https://usa.ipums.org/">IPUMS Census data</a></li>
+</ul>
+<h2 id="license">License</h2>
+<p>MIT License, <a href="http://lmullen.mit-license.org/">http://lmullen.mit-license.org/</a></p>
+<h2 id="citation">Citation</h2>
+<p>Eventually Cameron and I will publish an article about this method. In the meantime, please cite this <a href="https://github.com/ropensci/gender">GitHub repository</a>.</p>
+<p>By <a href="http://lincolnmullen.com/">Lincoln Mullen</a> and <a href="https://github.com/ropensci/gender/graphs/contributors">contributors</a>.</p>
+<h2 id="note">Note</h2>
+<p><a name="gender-vs-sex"></a>* Of course in most cases the Social 
+Security Administration data more approximately records the biological 
+category sex rather than the social category gender, since it mostly 
+records names given at birth. But since in most cases researchers will 
+be interested in gender, I've named this package gender, leaving it up 
+to researchers to interpret exactly what the encoded values mean.</p>
+<hr>
+<p><a href="http://ropensci.org/"><img src="gender_files/github_footer.png"></a></p>
+
+
+</body></html>

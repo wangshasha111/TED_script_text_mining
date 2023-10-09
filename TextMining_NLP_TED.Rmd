@@ -277,10 +277,21 @@ I will use the tidytext library to tokenize the transcripts to find which words 
 ```{r}
 custom_stop<- tribble(
 ~word, ~lexicon,
-"laughter", "custom",
-"applause", "custom", 
 "chris", "custom", 
+"applause", "custom", 
+"ted", "custom", 
+"people", "custom", 
+"time", "custom", 
+"world", "custom", 
+"life", "custom", 
+"day", "custom", 
+"lot", "custom", 
+"human", "custom", 
+"start", "custom", 
+"laughter", "custom",
 "anderson", "custom")
+
+
 
 stop_new<- stop_words%>%
 rbind(custom_stop)
@@ -298,6 +309,12 @@ transcript_male <- data_sub_gender %>% filter(female == 0) %>%
 
 t_transcript_count_female <- transcript_female %>% count(word)
 t_transcript_count_male <- transcript_male %>% count(word)
+
+t_transcript_count_female <- t_transcript_count_female[order(t_transcript_count_female$n,decreasing=TRUE),]
+t_transcript_count_male <- t_transcript_count_male[order(t_transcript_count_male$n,decreasing=TRUE),]
+
+
+
 
 set.seed(1)
 par(mfrow=c(1,2))
@@ -326,6 +343,10 @@ topics_male <- data_sub_gender %>% filter(female == 0) %>%
 t_topics_count_female <- topics_female %>% count(word)
 t_topics_count_male <- topics_male %>% count(word)
 
+
+t_topics_count_female <- t_topics_count_female[order(t_topics_count_female$n,decreasing=TRUE),]
+t_topics_count_male <- t_topics_count_male[order(t_topics_count_male$n,decreasing=TRUE),]
+
 set.seed(1)
 par(mfrow=c(1,2))
 
@@ -336,6 +357,8 @@ options(repr.plot.width = 8, repr.plot.height = 8)
 wordcloud(t_topics_count_male$word[1:20], t_topics_count_male$n[1:20], max.words=100, color="darkblue", scale=c(4,1.2), ordered.colors=F, random.order=FALSE, use.r.layout=FALSE)
 title("highest occuring in topics, male")
 options(repr.plot.width = 8, repr.plot.height = 8)
+
+
 
 ```
 

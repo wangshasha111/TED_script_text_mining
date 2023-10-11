@@ -11,6 +11,28 @@ In modern data mining, we often encounter the situation where a text may contain
 ## Software
 R 4.1.3 with packages dplyr, ggplot2, tm, SnowballC, RColorBrewer, wordcloud, glmnet, randomForest, ranger, data.table, qdap, tidyverse, tidytext, wordcloud, janitor, treemap, radarchart, SnowballC, magrittr, wesanderson, tm, lubridate, plotly, htmlwidgets, IRdisplay, topicmodels, repr, gender, genderdata
 
+More specifically, 
+## Packages used
+
+1. Text Mining Packages 
+   + [`tm`](https://cran.r-project.org/web/packages/tm/tm.pdf): a popular text mining package
+   + Note: Ingo Feinerer created text mining package `tm` in 2008 while he was a phd student at TU Vienna. Users can deploy `Hadoop` to handle large textual data.
+   - `SnowballC`: For Stemming 
+2. Word Cloud Packages
+   - `RColorBrewer`: a package for color palette
+   - `wordcloud`: a package for creating wordcloud
+3. LASSO and Random Forest packages 
+   - `glmnet` 
+   - `randomForest` 
+   - `ranger`
+   - [`stringr`](http://edrub.in/CheatSheets/cheatSheetStringr.pdf): useful string package
+
+My favorite packages: `ggplot2`, `dplyr`, `stringr` (string manipulations), `lubridate` (handling date-time). Most of them are aggregated into `tidyverse`.
+  
+
+## Modeling
+LASSO (least absolute shrinkage and selection operator)
+
 ## Takeaway
 The takeaway from the project is that males and females have different topics of interests and leverage different sets of words. The differences can be seen in word cloud intuitively, or can be quantitatively evaluated through LASSO regressions.
 

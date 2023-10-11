@@ -30,8 +30,8 @@ More specifically,
 My favorite packages: `ggplot2`, `dplyr`, `stringr` (string manipulations), `lubridate` (handling date-time). Most of them are aggregated into `tidyverse`.
   
 
-## Modeling
-LASSO (least absolute shrinkage and selection operator)
+## Model - LASSO (least absolute shrinkage and selection operator)
+In statistics and machine learning, lasso (least absolute shrinkage and selection operator; also Lasso or LASSO) is a regression analysis method that performs both variable selection and regularization in order to enhance the prediction accuracy and interpretability of the resulting statistical model. After turning a text into a vector, we can then use logistic regression models and LASSO to explore the relationship between `gender` and `text`. 
 
 ## Takeaway
 The takeaway from the project is that males and females have different topics of interests and leverage different sets of words. The differences can be seen in word cloud intuitively, or can be quantitatively evaluated through LASSO regressions.

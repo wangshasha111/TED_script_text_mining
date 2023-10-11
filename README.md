@@ -1,4 +1,4 @@
-# TED_script_text_mining
+# Using R to Predict the TED Talker's Gender
 
 ## Goal of the project
 The project aims to apply machine learning techniques to the dataset ted_talks_en.csv for text mining within the context of gender analysis.
